@@ -109,7 +109,7 @@ if(!is.na(fields[1]))
 	likelihood[i-1]="gaussian"
 	print("fields 1")
 	print(fields[1])
-	#RETRIEVED GRAPH FEATURES
+	#RETRIEVE GRAPH FEATURES
 	exprfeatures=read.table(fields[1],sep="\t",header=0)
 	colcount2=ncol(exprfeatures)
 	countList[[i-1]]=colcount2
