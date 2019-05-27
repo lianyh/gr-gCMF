@@ -119,13 +119,16 @@ if(!is.na(fields[1]))
 			 tableMatrix=as.matrix(exprfeatures)
 
 			 gTable=matrix(tableMatrix,nrow=nrow(tableMatrix),ncol=ncol(tableMatrix))
-			
+
+			 p=graph_from_adjacency_matrix(gTable,mode=c("undirected"))
+			 # gives the clustering coefficient of each node
+			 t1=transitivity(p, type="local")
+			 t1[is.nan(t1)] <- 0
+			 gCC=as.matrix(t1,ncol=1)
+
 			 deg=degree(gTable, gmode="graph")
 			 gDeg=as.matrix(deg,ncol=1)
-
-			 tt=closeness(gTable,gmode="graph")
-			 gCloness=as.matrix(tt,ncol=1)
-			 
+			
 			 tt=betweenness(gTable,gmode="graph")
 			 gBetweenness=as.matrix(tt,ncol=1)
 
@@ -144,7 +147,7 @@ if(!is.na(fields[1]))
 			 tt=flowbet(gTable, gmode="graph")
 			 gFlowBet=as.matrix(tt,ncol=1)
 
-			 graphFeatures=cbind(gDeg,gCloness,gBetweenness,gStressCent,gInfoCent,gEvCent,gGilSchmidt,gFlowBet)
+			 graphFeatures=cbind(gCC,gDeg,gBetweenness,gStressCent,gInfoCent,gEvCent,gGilSchmidt,gFlowBet)
 
 			 pca_retain=ncol(graphFeatures)
 			 countList[[i-1]]=pca_retain
