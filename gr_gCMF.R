@@ -59,8 +59,6 @@ inds[1,]=c(as.numeric(strsplit(linn[1], '\t') [[1]][3]),as.numeric(strsplit(linn
 triplets=list()
 X=list()
 F1_F2_F3_SL_binary_all=read.table(paste(input,train_set,sep="/"),sep="\t",header=0)
-#replace NA with 0
-F1_F2_F3_SL_binary_all[is.na(F1_F2_F3_SL_binary_all)] <- 0
 F1_F2_F3_SL_binary_all=as.matrix(F1_F2_F3_SL_binary_all)
 countList[[1]]=ncol(F1_F2_F3_SL_binary_all)
 
@@ -111,6 +109,8 @@ if(!is.na(fields[1]))
 	print(fields[1])
 	#RETRIEVE GRAPH FEATURES
 	exprfeatures=read.table(fields[1],sep="\t",header=0)
+	#replace NA with 0
+	exprfeatures[is.na(exprfeatures)] <- 0
 	colcount2=ncol(exprfeatures)
 	countList[[i-1]]=colcount2
 	isGP = fields[2]
@@ -135,7 +135,7 @@ if(!is.na(fields[1]))
 			 tt=stresscent(gTable,gmode="graph")
 			 gStressCent=as.matrix(tt,ncol=1)
 
-			 tt=infocent(gTable,gmode="graph")
+			 tt=infocent(gTable,gmode="graph",tol=1e-31)
 			 gInfoCent=as.matrix(tt,ncol=1)
 
 			 tt=evcent(gTable, gmode="graph")
@@ -144,10 +144,11 @@ if(!is.na(fields[1]))
 			 tt=gilschmidt(gTable, gmode="graph")
 			 gGilSchmidt=as.matrix(tt,ncol=1)
 
-			 tt=flowbet(gTable, gmode="graph")
-			 gFlowBet=as.matrix(tt,ncol=1)
+			 #note, this take sometime to complete
+			 #tt=flowbet(gTable, gmode="graph")
+			 #gFlowBet=as.matrix(tt,ncol=1)
 
-			 graphFeatures=cbind(gCC,gDeg,gBetweenness,gStressCent,gInfoCent,gEvCent,gGilSchmidt,gFlowBet)
+			 graphFeatures=cbind(gCC,gDeg,gBetweenness,gStressCent,gInfoCent,gEvCent,gGilSchmidt)
 
 			 pca_retain=ncol(graphFeatures)
 			 countList[[i-1]]=pca_retain
@@ -173,7 +174,7 @@ if(!is.na(fields[1]))
 }
 
 close(conn)
-
+K=2
 D=as.numeric(countList)
 opts <- getCMFopts()
 opts$iter.max <- 10 # Less iterations for faster computation
@@ -186,7 +187,7 @@ truth=triplets_test[[1]][,3]
 temp_testerr1=model$errors[1,1]
 temp_results=outm$out[[1]]
 
-for (i in 1:10) {
+for (i in 1:1000) {
 	model <- CMF(train,inds,K,likelihood,D,test=test,opts=opts)
 	newmodelError=model$errors[1,1]
 	if (newmodelError < temp_testerr1)
