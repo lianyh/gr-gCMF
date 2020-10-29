@@ -29,7 +29,7 @@ Citation
 --------------------------------
 If you find this useful for your research, we would be appreciated if you cite the following papers:<br/>
 <br/>
-<br/>
+
 @article{liany2020predicting,<br/>
   title={Predicting synthetic lethal interactions using heterogeneous data sources},<br/>
   author={Liany, Herty and Jeyasekharan, Anand and Rajan, Vaibhav},<br/>
